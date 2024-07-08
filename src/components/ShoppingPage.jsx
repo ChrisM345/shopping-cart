@@ -9,13 +9,16 @@ const ShopPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("test");
     fetch("https://fakestoreapi.com/products")
       .then((res) => res.json())
       .then((json) => {
+        json.forEach((product) => (product.quantity = 0));
+        console.log(json);
+
         setProducts(json);
         setProductQty(Array(json.length).fill(1));
       })
+
       .finally(() => setLoading(false));
   }, []);
 
@@ -28,7 +31,11 @@ const ShopPage = () => {
   }
 
   function handleAddItem(e, product, index) {
-    console.log(`Buying ${product} with quantity ${productQty[index]}`);
+    // console.log(`Buying ${product.title} with quantity ${productQty[index]}`);
+    let tempProductsData = products;
+    tempProductsData[index].quantity = productQty[index];
+    // console.log(tempProductsData);
+    setProducts(tempProductsData);
   }
 
   return loading ? (
@@ -51,7 +58,7 @@ const ShopPage = () => {
               <br />
               Price: ${product.price}
               <div className="productButtons">
-                <button onClick={(e) => handleAddItem(e, product.title, product.id - 1)}>Add Item</button>
+                <button onClick={(e) => handleAddItem(e, product, product.id - 1)}>Add Item</button>
                 <input
                   className="product-qty"
                   type="number"
