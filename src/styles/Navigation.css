@@ -1,0 +1,12 @@
+.navigationBar {
+  border: black solid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+li {
+  display: inline;
+  padding: 10px;
+  font-size: 2rem;
+}

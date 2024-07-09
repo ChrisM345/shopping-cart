@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
+import "../styles/Navigation.css";
 
 const Navigationbar = () => {
   return (
-    <>
+    <div className="navigationBar">
       <h1>Navigation Bar</h1>
       <nav>
         <ul>
@@ -10,11 +11,11 @@ const Navigationbar = () => {
             <Link to="/">Home Page</Link>
           </li>
           <li>
-            <Link to="/ShoppingCart">Shopping Cart</Link>
+            <Link to="/ShoppingCart">Shopping Page</Link>
           </li>
         </ul>
       </nav>
-    </>
+    </div>
   );
 };
 

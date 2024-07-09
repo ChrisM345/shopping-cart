@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import "../styles/Shoppingpage.css";
 
 const ShopPage = () => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartQuantity, setCartQuantity] = useState(0);
   const [products, setProducts] = useState([]);
   const [productQty, setProductQty] = useState();
   const [loading, setLoading] = useState(true);
@@ -36,6 +36,7 @@ const ShopPage = () => {
     tempProductsData[index].quantity = productQty[index];
     // console.log(tempProductsData);
     setProducts(tempProductsData);
+    setCartQuantity(cartQuantity + parseInt(productQty[index]));
   }
 
   return loading ? (
@@ -44,8 +45,10 @@ const ShopPage = () => {
     </>
   ) : (
     <>
-      <Navigationbar />
-      <h1>Shop Page</h1>
+      <div className="shopNav">
+        <h1>Shop Page</h1>
+        <h1>Cart: {cartQuantity} Items</h1>
+      </div>
       <div className="productCardContainer">
         {products.map((product) => {
           return (
