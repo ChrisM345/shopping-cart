@@ -1,12 +1,34 @@
 import Navigationbar from "./Navigation";
 import { useState, useEffect } from "react";
 import "../styles/Shoppingpage.css";
+import { Link } from "react-router-dom";
 
 const ShopPage = () => {
-  const [cartQuantity, setCartQuantity] = useState(0);
+  const [cartQuantity, setCartQuantity] = useState(() => {
+    const savedData = localStorage.getItem("numberOfItems");
+    return parseInt(savedData) || 0;
+  });
   const [products, setProducts] = useState([]);
   const [productQty, setProductQty] = useState();
   const [loading, setLoading] = useState(true);
+
+  const [cartItems, setCartItems] = useState(() => {
+    const savedData = localStorage.getItem("cartData");
+    const initialData = JSON.parse(savedData);
+    return initialData || [];
+  });
+
+  console.log(cartItems);
+
+  useEffect(() => {
+    // Storing cart data
+    localStorage.setItem("cartData", JSON.stringify(cartItems));
+  }, [cartItems, cartQuantity]);
+
+  useEffect(() => {
+    // Storing number of items in cart
+    localStorage.setItem("numberOfItems", cartQuantity);
+  }, [cartQuantity]);
 
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
@@ -16,6 +38,10 @@ const ShopPage = () => {
         console.log(json);
 
         setProducts(json);
+        if (cartItems.length == 0) {
+          console.log("it's empty");
+          setCartItems(json);
+        }
         setProductQty(Array(json.length).fill(1));
       })
 
@@ -33,9 +59,10 @@ const ShopPage = () => {
   function handleAddItem(e, product, index) {
     // console.log(`Buying ${product.title} with quantity ${productQty[index]}`);
     let tempProductsData = products;
-    tempProductsData[index].quantity = productQty[index];
+    tempProductsData[index].quantity = parseInt(tempProductsData[index].quantity) + parseInt(productQty[index]);
     // console.log(tempProductsData);
     setProducts(tempProductsData);
+    setCartItems(products);
     setCartQuantity(cartQuantity + parseInt(productQty[index]));
   }
 
@@ -47,7 +74,11 @@ const ShopPage = () => {
     <>
       <div className="shopNav">
         <h1>Shop Page</h1>
-        <h1>Cart: {cartQuantity} Items</h1>
+        <h1>
+          <Link to="/ShoppingCart" state={{ cartData: cartItems, quantity: cartQuantity }}>
+            Cart: {cartQuantity} Items
+          </Link>
+        </h1>
       </div>
       <div className="productCardContainer">
         {products.map((product) => {
