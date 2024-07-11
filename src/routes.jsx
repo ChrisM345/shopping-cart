@@ -2,6 +2,7 @@ import Homepage from "./components/HomePage";
 import ShopPage from "./components/ShoppingPage";
 import ErrorPage from "./components/ErrorPage";
 import MainPage from "./components/MainPage";
+import CartPage from "./components/ShoppingCart";
 
 const routes = [
   {
@@ -13,8 +14,12 @@ const routes = [
         element: <MainPage />,
       },
       {
-        path: "/ShoppingCart",
+        path: "/ShoppingPage",
         element: <ShopPage />,
+      },
+      {
+        path: "ShoppingCart",
+        element: <CartPage />,
       },
     ],
     errorElement: <ErrorPage />,
