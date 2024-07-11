@@ -5,6 +5,7 @@
   padding-left: 100px;
   padding-right: 100px;
   justify-content: center;
+  gap: 5px;
 }
 .productCard {
   display: flex;
@@ -36,4 +37,16 @@
   min-width: 0;
   height: 2.5rem;
   line-height: 1;
+}
+
+.shopNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shopNav {
+  border-bottom: black solid;
+  border-left: black solid;
+  border-right: black solid;
 }
