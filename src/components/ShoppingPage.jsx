@@ -39,8 +39,9 @@ const ShopPage = () => {
 
         setProducts(json);
         if (cartItems.length == 0) {
-          console.log("it's empty");
           setCartItems(json);
+        } else {
+          setProducts(cartItems);
         }
         setProductQty(Array(json.length).fill(1));
       })
@@ -72,13 +73,17 @@ const ShopPage = () => {
     </>
   ) : (
     <>
-      <div className="shopNav">
-        <h1>Shop Page</h1>
-        <h1>
-          <Link to="/ShoppingCart" state={{ cartData: cartItems, quantity: cartQuantity }}>
-            Cart: {cartQuantity} Items
-          </Link>
-        </h1>
+      <div className="navigation">
+        <div className="shopNav">
+          <h1>Shop Page</h1>
+          <ul>
+            <li>
+              <Link to="/ShoppingCart" state={{ cartData: cartItems, quantity: cartQuantity }}>
+                Cart: {cartQuantity} Items
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
       <div className="productCardContainer">
         {products.map((product) => {
@@ -90,7 +95,7 @@ const ShopPage = () => {
               <br />
               {product.description}
               <br />
-              Price: ${product.price}
+              Price: ${product.price.toFixed(2)}
               <div className="productButtons">
                 <button onClick={(e) => handleAddItem(e, product, product.id - 1)}>Add Item</button>
                 <input
