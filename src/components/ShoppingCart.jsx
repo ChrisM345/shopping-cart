@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import minus from "../assets/minus-box.svg";
 import plus from "../assets/plus-box.svg";
@@ -6,60 +6,72 @@ import trash from "../assets/trash-can.svg";
 import "../styles/ShoppingCart.css";
 
 const CartPage = () => {
-  const location = useLocation();
+  //Had issues with the below when using back and forward buttons
 
+  // const location = useLocation();
+
+  // const [quantity, setQuantity] = useState(() => {
+  //   const { quantity } = location.state;
+  //   return quantity || 0;
+  // });
+
+  // const [cartData, setCartData] = useState(() => {
+  //   const { cartData } = location.state;
+  //   return cartData || [];
+  // });
+
+  //Grab data from localStorage
   const [quantity, setQuantity] = useState(() => {
-    const { quantity } = location.state;
-    return quantity || 0;
+    const savedData = localStorage.getItem("numberOfItems");
+    return parseInt(savedData) || 0;
   });
 
   const [cartData, setCartData] = useState(() => {
-    const { cartData } = location.state;
-    return cartData || [];
+    const savedData = localStorage.getItem("cartData");
+    return JSON.parse(savedData) || [];
   });
 
+  //Go through the data and add up item quantities to get the total
   let total = 0;
   cartData.map((product) => {
     total = total + product.price * product.quantity;
   });
-  console.log(cartData);
 
+  //Buying items deletes localStorage data
   function handleBuyItems() {
     localStorage.removeItem("numberOfItems");
     localStorage.removeItem("cartData");
     setQuantity(0);
-    console.log(quantity);
     setCartData([]);
     alert("Items Bought");
   }
 
+  //Handles minus button for removing one item
   function handleCartRemoveItem(index) {
     let tempCartData = cartData;
-    let tempQuantity = tempCartData[index].quantity - 1;
-    tempCartData[index].quantity = tempQuantity;
+    let tempItemQuantity = tempCartData[index].quantity - 1;
+    tempCartData[index].quantity = tempItemQuantity;
 
     setCartData(tempCartData);
-    setQuantity(tempQuantity);
+    setQuantity(quantity - 1);
     localStorage.setItem("cartData", JSON.stringify(tempCartData));
-    localStorage.setItem("numberOfItems", tempQuantity);
+    localStorage.setItem("numberOfItems", quantity - 1);
   }
 
+  //Handles add button for adding one item
   function handleCartAddItem(index) {
     let tempCartData = cartData;
-    let tempQuantity = tempCartData[index].quantity + 1;
-    tempCartData[index].quantity = tempQuantity;
+    let tempItemQuantity = tempCartData[index].quantity + 1;
+    tempCartData[index].quantity = tempItemQuantity;
 
     setCartData(tempCartData);
-    setQuantity(tempQuantity);
+    setQuantity(quantity + 1);
     localStorage.setItem("cartData", JSON.stringify(tempCartData));
-    localStorage.setItem("numberOfItems", tempQuantity);
+    localStorage.setItem("numberOfItems", quantity + 1);
   }
 
+  //Removes entire item
   function handleCartItemDelete(index) {
-    console.log("delete!");
-    console.log(cartData);
-    console.log(index);
-    console.log(cartData[index]);
     let tempCartData = cartData;
     let tempQuantity = tempCartData[index].quantity;
     tempCartData[index].quantity = 0;

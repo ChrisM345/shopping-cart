@@ -1,24 +1,24 @@
-import Navigationbar from "./Navigation";
 import { useState, useEffect } from "react";
 import "../styles/Shoppingpage.css";
 import { Link } from "react-router-dom";
 
 const ShopPage = () => {
+  //Check localStorage for quantity data. If no data, set to 0
   const [cartQuantity, setCartQuantity] = useState(() => {
     const savedData = localStorage.getItem("numberOfItems");
     return parseInt(savedData) || 0;
   });
-  const [products, setProducts] = useState([]);
-  const [productQty, setProductQty] = useState();
-  const [loading, setLoading] = useState(true);
 
+  //Check localStorage for cartData. If no data, set to empty array
   const [cartItems, setCartItems] = useState(() => {
     const savedData = localStorage.getItem("cartData");
     const initialData = JSON.parse(savedData);
     return initialData || [];
   });
 
-  console.log(cartItems);
+  const [products, setProducts] = useState([]);
+  const [productQty, setProductQty] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Storing cart data
@@ -35,8 +35,6 @@ const ShopPage = () => {
       .then((res) => res.json())
       .then((json) => {
         json.forEach((product) => (product.quantity = 0));
-        console.log(json);
-
         setProducts(json);
         if (cartItems.length == 0) {
           setCartItems(json);
@@ -45,23 +43,19 @@ const ShopPage = () => {
         }
         setProductQty(Array(json.length).fill(1));
       })
-
       .finally(() => setLoading(false));
-  }, []);
+  }, [cartItems]);
 
+  //Updates quantity selection of each item
   function handleQuantityUpdate(e, index) {
     let copiedProductQty = [...productQty];
-    console.log(e.target.value);
     copiedProductQty[index] = e.target.value;
     setProductQty(copiedProductQty);
-    console.log(productQty);
   }
 
-  function handleAddItem(e, product, index) {
-    // console.log(`Buying ${product.title} with quantity ${productQty[index]}`);
+  function handleAddItem(index) {
     let tempProductsData = products;
     tempProductsData[index].quantity = parseInt(tempProductsData[index].quantity) + parseInt(productQty[index]);
-    // console.log(tempProductsData);
     setProducts(tempProductsData);
     setCartItems(products);
     setCartQuantity(cartQuantity + parseInt(productQty[index]));
@@ -89,7 +83,6 @@ const ShopPage = () => {
         {products.map((product) => {
           return (
             <div key={product.id} className="productCard">
-              {/* {product.id} */}
               <h2>{product.title}</h2>
               <img className="productImages" src={product.image} />
               <br />
@@ -97,7 +90,7 @@ const ShopPage = () => {
               <br />
               Price: ${product.price.toFixed(2)}
               <div className="productButtons">
-                <button onClick={(e) => handleAddItem(e, product, product.id - 1)}>Add Item</button>
+                <button onClick={() => handleAddItem(product.id - 1)}>Add Item</button>
                 <input
                   className="product-qty"
                   type="number"
